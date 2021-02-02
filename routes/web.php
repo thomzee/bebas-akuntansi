@@ -27,7 +27,10 @@ Route::get('/', ['as' => 'welcome', function () {
 }]);
 
 Route::group(['namespace' => 'App\Http\Controllers\Admin', 'as' => 'admin::', 'middleware' => 'auth', 'prefix' => 'admin'], function () {
-    Route::get('/dashboard', ['as' => 'dashboard.index', 'uses' => 'DashboardController@index']);
+    Route::group(['as' => 'dashboard.', 'prefix' => 'dashboard'], function () {
+        Route::get('/index', ['as' => 'index', 'uses' => 'DashboardController@index']);
+        Route::get('/datatables', ['as' => 'datatables', 'uses' => 'DashboardController@datatables']);
+    });
 });
 
 //Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');

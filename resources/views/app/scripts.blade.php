@@ -33,4 +33,9 @@
 <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
 <script src="{{ config('path.themes') . '/dist/js/pages/dashboard.js' }}"></script>
 
+<script src="{{ config('path.themes') . '/plugins/datatables/jquery.dataTables.min.js' }}"></script>
+<script src="{{ config('path.themes') . '/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js' }}"></script>
+{{--<script src="{{ config('path.themes') . '/plugins/datatables-buttons/buttons.bootstrap4.min.js' }}"></script>--}}
+{{--<script src="{{ config('path.themes') . '/plugins/datatables-responsive/responsive.bootstrap4.min.js' }}"></script>--}}
+
 @stack('scripts')

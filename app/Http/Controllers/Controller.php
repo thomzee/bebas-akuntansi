@@ -10,4 +10,14 @@ use Illuminate\Routing\Controller as BaseController;
 class Controller extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
+
+    const ADMIN_PREFIX = 'admin::';
+
+    protected function share(array $prop)
+    {
+        view()->share('menu', $prop['menu']);
+        view()->share('slug', $prop['slug']);
+        view()->share('route', self::ADMIN_PREFIX . $prop['slug']);
+        view()->share('view', $prop['view']);
+    }
 }
