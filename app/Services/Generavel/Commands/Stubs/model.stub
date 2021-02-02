@@ -1,0 +1,45 @@
+<?php
+
+
+namespace App\Models;
+
+
+use Illuminate\Database\Eloquent\Model;
+
+class DummyModel extends Model
+{
+    /**
+     * The primary key for the model.
+     *
+     * @var string
+     */
+    protected $primaryKey = 'id';
+
+    /**
+     * Indicates if the IDs are auto-incrementing.
+     *
+     * @var bool
+     */
+    public $incrementing = false;
+
+    /**
+     * The "type" of the primary key ID.
+     *
+     * @var string
+     */
+    protected $keyType = 'string';
+
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = [
+        'foo', 'bar'
+    ];
+
+    public static function sql()
+    {
+        return self::select('*');
+    }
+}

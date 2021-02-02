@@ -1,0 +1,125 @@
+<?php
+
+namespace App\Http\Controllers\Api;
+
+use App\Http\Controllers\Controller;
+use App\Http\Requests\Foo\CreateRequest;
+use App\Http\Requests\Foo\UpdateRequest;
+use App\Mappers\FooMapper;
+use App\Models\Foo;
+use App\Services\Mapper\Facades\Mapper;
+use Webpatser\Uuid\Uuid;
+use Illuminate\Http\Request;
+
+class DummyController extends Controller
+{
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function index(Request $request)
+    {
+        $search_term = $request->input('search');
+        $limit = $request->has('limit') ? $request->input('limit') : 10;
+        $sort = $request->has('sort') ? $request->input('sort') : 'updated_at';
+        $order = $request->has('order') ? $request->input('order') : 'DESC';
+        $conditions = '1 = 1';
+        if (!empty($search_term)) {
+            $conditions .= " AND name ILIKE '%$search_term%'";
+        }
+        try {
+            $paged = Foo::whereRaw($conditions)
+                ->orderBy($sort, $order)
+                ->paginate($limit);
+            return Mapper::list(new FooMapper(), $paged, Foo::count(), $request->method());
+        } catch (\Exception $e) {
+            return Mapper::error($e->getMessage(), $request->method());
+        }
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @param CreateRequest $request
+     * @return \Illuminate\Http\Response
+     * @throws \Exception
+     */
+    public function create(CreateRequest $request)
+    {
+        \DB::beginTransaction();
+        try {
+            $item = Foo::create([
+                'id' => Uuid::generate(4)->string,
+                'foo' => $request->bar,
+            ]);
+            \DB::commit();
+            return Mapper::single(new FooMapper(), $item, $request->method());
+        } catch (\Exception $e) {
+            \DB::rollback();
+            return Mapper::error($e->getMessage(), $request->method());
+        }
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function show($id, Request $request)
+    {
+        try {
+            $item = Foo::findOrFail($id);
+            return Mapper::single(new FooMapper(), $item, $request->method());
+        } catch (\Exception $e) {
+            return Mapper::error($e->getMessage(), $request->method());
+        }
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param int $id
+     * @param UpdateRequest $request
+     * @return \Illuminate\Http\Response
+     * @throws \Exception
+     */
+    public function edit($id, UpdateRequest $request)
+    {
+        \DB::beginTransaction();
+        try {
+            $item = Foo::findOrFail($id);
+            $item->update([
+                'foo' => $request->bar,
+            ]);
+            \DB::commit();
+            return Mapper::single(new FooMapper(), $item, $request->method());
+        } catch (\Exception $e) {
+            \DB::rollback();
+            return Mapper::error($e->getMessage(), $request->method());
+        }
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param $companyCode
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     * @throws \Exception
+     */
+    public function destroy($id, Request $request)
+    {
+        \DB::beginTransaction();
+        try {
+            $item = Foo::findOrFail($id);
+            $item->delete();
+            \DB::commit();
+            return Mapper::success($request->method());
+        } catch (\Exception $e) {
+            \DB::rollback();
+            return Mapper::error($e->getMessage(), $request->method());
+        }
+    }
+}

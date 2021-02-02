@@ -176,6 +176,8 @@ return [
         App\Providers\RouteServiceProvider::class,
 
         Yajra\DataTables\DataTablesServiceProvider::class,
+        App\Services\Generavel\Providers\GeneravelServiceProvider::class,
+        App\Services\Mapper\Providers\MapperServiceProvider::class,
 
     ],
 
@@ -230,7 +232,7 @@ return [
         'View' => Illuminate\Support\Facades\View::class,
 
         'DataTables' => Yajra\DataTables\Facades\DataTables::class,
-
+        'Mapper' => App\Services\Mapper\Facades\Mapper::class,
     ],
 
 ];
